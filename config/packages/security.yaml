@@ -7,6 +7,12 @@ security:
     providers:
         users_in_memory: { memory: null }
 
+        # Se añade esta ruta
+        app_user_provider:
+            entity:
+                class: App\Entity\Usuario
+                property: username
+
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
@@ -14,7 +20,15 @@ security:
             security: false
         main:
             lazy: true
-            provider: users_in_memory
+            provider:  app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall

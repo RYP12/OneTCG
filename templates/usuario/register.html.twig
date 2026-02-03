@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro - OneTCG{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                {# Tarjeta Visual #}
+                <div class="card shadow-sm">
+                    <div class="card-header text-center bg-primary text-white">
+                        <h2 class="h4 mb-0">Crear Cuenta</h2>
+                    </div>
+                    <div class="card-body p-4">
+
+                        {#
+                        CAMBIO IMPORTANTE:
+                        Usamos HTML estándar (<form>) en lugar de form_start().
+                        Esto es lo que tu controlador manual espera.
+                        #}
+                        <form method="post">
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Nombre de Usuario</label>
+                                {# El 'name' debe coincidir con $request->get('username') en tu controlador #}
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Ej. LuffyReyPirata" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Correo Electrónico</label>
+                                {# IMPORTANTE: He puesto name="email". Asegúrate que tu controlador busca 'email' y no 'mail' #}
+                                <input type="email" class="form-control" id="email" name="email" placeholder="nombre@email.com" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <div class="form-text text-muted small">
+                                    La contraseña debe tener al menos 6 caracteres.
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">Registrarse</button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="card-footer text-center text-muted">
+                        ¿Ya tienes una cuenta? <a href="{{ path('app_login') }}">Inicia sesión aquí</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

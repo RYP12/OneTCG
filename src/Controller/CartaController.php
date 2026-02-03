@@ -7,13 +7,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class HomeController extends AbstractController
+class CartaController extends AbstractController
 {
-    #[Route('/', name: 'app_home')]
-    public function index(): Response
+    #[Route('/', name: 'app_cartas')]
+    public function index(CartaRepository $cartaRepository): Response
     {
+        $cartas = $cartaRepository->obtenerTodasLasCartas();
+
         return $this->render('home/home.html.twig', [
-            'controller_name' => 'HomeController',
+            'cartas' => $cartas,
         ]);
     }
 }
