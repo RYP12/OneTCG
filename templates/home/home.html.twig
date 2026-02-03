@@ -1,0 +1,119 @@
+{# templates/home/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {# --- HERO SECTION (Cabecera Llamativa) --- #}
+    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-dark rounded-3 shadow-lg"
+         style="background: linear-gradient(45deg, #2c3e50, #000000); border: 1px solid #333;">
+        <div class="col-md-8 p-lg-5 mx-auto my-5">
+            <h1 class="display-4 fw-bold text-white">ELIGE TU FAVORITA</h1>
+            <p class="lead fw-normal text-secondary mb-4">
+                Comparte tu voto sobre cuales son las mejores cartas.
+            </p>
+            <a class="btn btn-warning btn-lg px-4 gap-3 fw-bold text-dark shadow" href="#cartas-grid">
+                Ver RANKINGS
+            </a>
+        </div>
+        {# Decoración de fondo (opcional) #}
+        <div class="product-device shadow-sm d-none d-md-block"></div>
+        <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+    </div>
+
+    <div class="container mt-5" id="cartas-grid">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
+            <h2 class="h3 text-white mb-0">Últimas Incorporaciones</h2>
+            <span class="badge bg-dark border border-secondary text-secondary">Actualizado recientemente</span>
+        </div>
+
+        {# --- GRID DE CARTAS --- #}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {% for carta in cartas %}
+                <div class="col">
+                    <div class="card h-100 tcg-card overflow-hidden position-relative">
+
+                        {# Borde superior de color según la carta #}
+                        <div style="height: 4px; background-color: {{ _self.getColorHex(carta.color) }};"></div>
+
+                        {# Gestión de imagen #}
+                        {% set imagenUrl = null %}
+                        {% for img in carta.imagenes %}
+                            {% if img.tamanyo == 'small' %}{% set imagenUrl = img.url %}{% endif %}
+                        {% endfor %}
+                        {% if imagenUrl is null and carta.imagenes|length > 0 %}
+                            {% set imagenUrl = carta.imagenes|first.url %}
+                        {% endif %}
+
+                        <div class="card-img-top bg-black p-1 position-relative text-center">
+                            {% if imagenUrl %}
+                                <img src="{{ imagenUrl }}" class="img-fluid rounded" alt="{{ carta.nombre }}" loading="lazy"
+                                     style="max-height: 320px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));">
+                            {% else %}
+                                <div class="d-flex align-items-center justify-content-center text-muted" style="height: 300px;">
+                                    Sin Imagen
+                                </div>
+                            {% endif %}
+
+                            {# Badge de Rareza #}
+                            <span class="position-absolute top-0 end-0 m-2 badge bg-black bg-opacity-75 border border-secondary text-warning">
+                                {{ carta.rarity|default('Common') }}
+                            </span>
+                        </div>
+
+                        <div class="card-body bg-dark text-white pt-2">
+                            <h5 class="card-title text-truncate fw-bold mb-0" title="{{ carta.nombre }}">{{ carta.nombre }}</h5>
+                            <small class="text-secondary d-block mb-3">{{ carta.id }} · {{ carta.tipo }}</small>
+
+                            {# Estadísticas Visuales #}
+                            <div class="d-flex justify-content-between text-center bg-black bg-opacity-25 rounded p-2 mb-2 border border-secondary border-opacity-25">
+                                <div>
+                                    <div class="text-secondary small" style="font-size: 0.7rem;">PODER</div>
+                                    <div class="fw-bold text-danger">{{ carta.poder ?? '-' }}</div>
+                                </div>
+                                <div class="border-start border-secondary mx-2"></div>
+                                <div>
+                                    <div class="text-secondary small" style="font-size: 0.7rem;">COUNTER</div>
+                                    <div class="fw-bold text-info">{{ carta.counter ?? '-' }}</div>
+                                </div>
+                                <div class="border-start border-secondary mx-2"></div>
+                                <div>
+                                    <div class="text-secondary small" style="font-size: 0.7rem;">COSTE</div>
+                                    <div class="fw-bold text-warning">{{ carta.coste ?? '-' }}</div>
+                                </div>
+                            </div>
+
+                            {# Badge de Color #}
+                            <span class="badge w-100" style="background-color: {{ _self.getColorHex(carta.color) }}; color: white; text-shadow: 1px 1px 2px black;">
+                                {{ carta.color }}
+                            </span>
+                        </div>
+
+                        {# Botón Overlay (aparece al final) #}
+                        <div class="card-footer bg-dark border-top border-secondary p-1">
+                            <a href="#" class="btn btn-outline-light btn-sm w-100 border-0" style="font-size: 0.85rem;">
+                                Ver Detalles & Reseñas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <h3 class="text-muted">No hay cartas cargadas</h3>
+                    <p>Ejecuta el importador desde el panel de administración.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{# MACRO para colores (Igual que antes pero ajustada para CSS) #}
+{% macro getColorHex(colorName) %}
+    {% if 'Red' in colorName %}#c0392b
+    {% elseif 'Green' in colorName %}#27ae60
+    {% elseif 'Blue' in colorName %}#2980b9
+    {% elseif 'Purple' in colorName %}#8e44ad
+    {% elseif 'Black' in colorName %}#2c3e50
+    {% elseif 'Yellow' in colorName %}#f39c12
+    {% else %}#7f8c8d{% endif %}
+{% endmacro %}
