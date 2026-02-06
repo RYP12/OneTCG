@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class CartaController extends AbstractController
 {
     #[Route('/', name: 'app_cartas')]
-    public function index(CartaRepository $cartaRepository): Response
+    public function cartasInicio(CartaRepository $cartaRepository): Response
     {
         $cartas = $cartaRepository->obtenerTodasLasCartas();
 
@@ -19,3 +19,4 @@ class CartaController extends AbstractController
         ]);
     }
 }
+
