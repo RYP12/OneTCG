@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request; // <--- Faltaba esto
+use Symfony\Component\HttpFoundation\Request; 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -22,7 +22,7 @@ final class UsuarioController extends AbstractController
 
             // Recogemos los datos de los inputs HTML (usando los 'name' del HTML)
             $newUser->setUsername($request->request->get('username'));
-            $newUser->setEmail($request->request->get('email')); // Ojo: en tu HTML pusiste name="mail", no "email"
+            $newUser->setEmail($request->request->get('email')); 
 
             $passwordText = $request->request->get('password');
 
@@ -37,7 +37,7 @@ final class UsuarioController extends AbstractController
             $entityManager->persist($newUser);
             $entityManager->flush();
 
-            // ¡Importante! Si todo sale bien, nos vamos al login
+            // Si todo sale bien, nos vamos al login
             return $this->redirectToRoute('app_login');
         }
 
