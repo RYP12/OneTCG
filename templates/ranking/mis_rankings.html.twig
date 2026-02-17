@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mis Rankings
+{% endblock %}
+
+{% block body %}
+	<div class="container py-5">
+		<h1 class="display-5 fw-bold text-white mb-5">🏆 Centro de Rankings (Tierlists)</h1>
+
+		{# SECCIÓN: Rankings Nuevos #}
+		<h3 class="text-warning border-bottom border-secondary pb-2 mb-4">Nuevas Tierlists Disponibles</h3>
+		<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+			{% for ranking in rankings_nuevos %}
+				<div class="col">
+					<div class="card bg-dark border-warning h-100 shadow-sm">
+						<div class="card-body text-center">
+							<h4 class="card-title text-white mb-3">{{ ranking.nombre }}</h4>
+							<p class="text-muted small">{{ ranking.cartasDisponibles|length }}
+								cartas para ordenar</p>
+							<a href="{{ path('app_ranking_iniciar', {'id': ranking.id}) }}" class="btn btn-warning w-100 text-dark fw-bold">
+								▶️ Empezar a Ordenar
+							</a>
+						</div>
+					</div>
+				</div>
+			{% else %}
+				<div class="col-12">
+					<div class="alert alert-dark border-secondary text-muted">
+						Has completado todas las Tierlists disponibles o el administrador aún no ha creado ninguna nueva.
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+
+		{# SECCIÓN: Mis Rankings #}
+		<h3 class="text-info border-bottom border-secondary pb-2 mb-4">Mis Tierlists Completadas</h3>
+		<div class="row row-cols-1 row-cols-md-3 g-4">
+			{% for ranking in rankings_participados %}
+				<div class="col">
+					<div class="card bg-dark border-secondary h-100">
+						<div class="card-body text-center">
+							<h4 class="card-title text-info mb-3">{{ ranking.nombre }}</h4>
+							<a href="{{ path('app_ranking_detalle', {'id': ranking.id}) }}" class="btn btn-outline-info w-100 fw-bold">
+								👁️ Ver y Editar mi Top
+							</a>
+						</div>
+					</div>
+				</div>
+			{% else %}
+				<div class="col-12">
+					<p class="text-muted">Aún no has ordenado ninguna Tierlist.</p>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

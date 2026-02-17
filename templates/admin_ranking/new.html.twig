@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Ranking
+{% endblock %}
+
+{% block body %}
+	{# SECCIÓN: Crear Nuevo Ranking #}
+	<h1>Create new Ranking</h1>
+
+	{{ include('admin_ranking/_form.html.twig') }}
+
+	<a href="{{ path('app_admin_ranking_index') }}">back to list</a>
+{% endblock %}

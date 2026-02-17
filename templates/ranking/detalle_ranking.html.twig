@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Top:
+	{{ ranking.nombre }}
+{% endblock %}
+
+{% block body %}
+	<div class="container py-5">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h1 class="text-warning mb-0">Mi Top:
+				<span class="text-white">{{ ranking.nombre }}</span>
+			</h1>
+			<a href="{{ path('app_mis_rankings') }}" class="btn btn-outline-light">🔙 Volver a mis rankings</a>
+		</div>
+
+		{% if items is empty %}
+			<div class="alert alert-dark border-secondary text-center text-light">
+				No tienes cartas en este ranking.
+			</div>
+		{% else %}
+			<ul class="list-group shadow-sm">
+				{% for item in items %}
+					<li
+						class="list-group-item bg-dark border-secondary d-flex justify-content-between align-items-center mb-2 rounded p-3">
+
+						{# SECCIÓN: Info de Carta en Lista #}
+						<div class="d-flex align-items-center">
+							<h2 class="text-warning me-4 mb-0 fw-bold">#{{ loop.index }}</h2>
+							<div>
+								<h5 class="text-light mb-0">{{ item.carta.nombre }}</h5>
+								<small class="text-muted">{{ item.carta.tipo }}</small>
+							</div>
+						</div>
+
+						{# SECCIÓN: Controles #}
+						<div class="d-flex align-items-center gap-2">
+							{% if not loop.first %}
+								<a href="{{ path('app_ranking_mover', {'id': ranking.id, 'item_id': item.id, 'direccion': 'arriba'}) }}" class="btn btn-sm btn-info text-dark fw-bold" title="Subir posición">
+									⬆ Subir
+								</a>
+							{% else %}
+								<button class="btn btn-sm btn-outline-secondary" disabled>⬆ Subir</button>
+							{% endif %}
+
+							{% if not loop.last %}
+								<a href="{{ path('app_ranking_mover', {'id': ranking.id, 'item_id': item.id, 'direccion': 'abajo'}) }}" class="btn btn-sm btn-danger text-light fw-bold" title="Bajar posición">
+									⬇ Bajar
+								</a>
+							{% else %}
+								<button class="btn btn-sm btn-outline-secondary" disabled>⬇ Bajar</button>
+							{% endif %}
+
+							<a href="{{ path('app_carta_detalle', {'id': item.carta.id}) }}" class="btn btn-sm btn-outline-light ms-3">
+								Ver Carta
+							</a>
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</div>
+{% endblock %}

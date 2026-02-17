@@ -6,11 +6,13 @@ use App\Repository\ResenyaRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+// SECCIÓN: Entidad Reseña
 #[ORM\Entity(repositoryClass: ResenyaRepository::class)]
 #[ORM\Table(name: 'resenya', schema: 'onetcg')]
 #[ORM\UniqueConstraint(name: 'resenya_usuario_carta_unique', columns: ['id_usuario', 'id_carta'])]
 class Resenya
 {
+    // SECCIÓN: Propiedades
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -30,6 +32,7 @@ class Resenya
     #[ORM\JoinColumn(name: 'id_carta', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private ?Carta $carta = null;
 
+    // SECCIÓN: Getters y Setters
     public function getId(): ?int
     {
         return $this->id;

@@ -8,12 +8,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+// SECCIÓN: Entidad Carta
 #[ORM\Entity(repositoryClass: CartaRepository::class)]
 #[ORM\Table(name: 'carta', schema: 'onetcg')]
 class Carta
 {
+    // SECCIÓN: Propiedades
     #[ORM\Id]
-    //  Hay que eliminar esta linea para usar la id de la api #[ORM\GeneratedValue]
     #[ORM\Column(type: 'string', length: 50)]
     private ?string $id = null;
 
@@ -60,11 +61,13 @@ class Carta
     #[ORM\OneToMany(mappedBy: 'carta', targetEntity: Imagenes::class, cascade: ['persist', 'remove'])]
     private Collection $imagenes;
 
+    // SECCIÓN: Constructor
     public function __construct()
     {
         $this->imagenes = new ArrayCollection();
     }
 
+    // SECCIÓN: Getters y Setters
     /**
      * @return Collection<int, Imagenes>
      */
@@ -72,6 +75,7 @@ class Carta
     {
         return $this->imagenes;
     }
+
     public function setId(string $id): static
     {
         $this->id = $id;
@@ -91,7 +95,6 @@ class Carta
     public function setRarity(?string $rarity): static
     {
         $this->rarity = $rarity;
-
         return $this;
     }
 
@@ -103,7 +106,6 @@ class Carta
     public function setTipo(string $tipo): static
     {
         $this->tipo = $tipo;
-
         return $this;
     }
 
@@ -115,7 +117,6 @@ class Carta
     public function setNombre(string $nombre): static
     {
         $this->nombre = $nombre;
-
         return $this;
     }
 
@@ -127,7 +128,6 @@ class Carta
     public function setCoste(?int $coste): static
     {
         $this->coste = $coste;
-
         return $this;
     }
 
@@ -139,7 +139,6 @@ class Carta
     public function setAtributoNombre(?string $atributoNombre): static
     {
         $this->atributoNombre = $atributoNombre;
-
         return $this;
     }
 
@@ -151,7 +150,6 @@ class Carta
     public function setAtributoIconoUrl(?string $atributoIconoUrl): static
     {
         $this->atributoIconoUrl = $atributoIconoUrl;
-
         return $this;
     }
 
@@ -163,7 +161,6 @@ class Carta
     public function setPoder(?int $poder): static
     {
         $this->poder = $poder;
-
         return $this;
     }
 
@@ -175,7 +172,6 @@ class Carta
     public function setCounter(?int $counter): static
     {
         $this->counter = $counter;
-
         return $this;
     }
 
@@ -187,7 +183,6 @@ class Carta
     public function setColor(?string $color): static
     {
         $this->color = $color;
-
         return $this;
     }
 
@@ -199,7 +194,6 @@ class Carta
     public function setFamilia(?string $familia): static
     {
         $this->familia = $familia;
-
         return $this;
     }
 
@@ -211,7 +205,6 @@ class Carta
     public function setHabilidad(?string $habilidad): static
     {
         $this->habilidad = $habilidad;
-
         return $this;
     }
 
@@ -223,7 +216,6 @@ class Carta
     public function setEfectoTrigger(?string $efectoTrigger): static
     {
         $this->efectoTrigger = $efectoTrigger;
-
         return $this;
     }
 

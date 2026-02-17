@@ -5,35 +5,102 @@ namespace App\Controller;
 use App\Entity\Carta;
 use App\Entity\Expansiones;
 use App\Entity\Imagenes;
+use App\Entity\Ranking;
+use App\Repository\CartaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 
+// SECCIÓN: Controlador de Administración
 final class AdminController extends AbstractController
 {
+    // SECCIÓN: Rutas Principales
     #[Route('/admin', name: 'admin_site')]
     public function index(): Response
     {
         return $this->render('admin/admin.html.twig');
     }
 
+    #[Route('/admin/rankings', name: 'admin_rankings')]
+    public function gestionRankings(Request $request, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        if ($request->isMethod('POST')) {
+            $nombre = trim($request->request->get('nombre', ''));
+            if ($nombre !== '') {
+                $ranking = new Ranking();
+                $ranking->setNombre($nombre);
+                $em->persist($ranking);
+                $em->flush();
+            }
+            return $this->redirectToRoute('admin_rankings');
+        }
+
+        $rankings = $em->getRepository(Ranking::class)->findAll();
+
+        return $this->render('admin/rankings.html.twig', [
+            'rankings' => $rankings,
+        ]);
+    }
+
+    // SECCIÓN: Gestión de Cartas en Tierlist
+    #[Route('/admin/rankings/{id}/editar', name: 'admin_ranking_editar', methods: ['GET', 'POST'])]
+    public function editarCartas(Request $request, Ranking $ranking, EntityManagerInterface $em, CartaRepository $cartaRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        if ($request->isMethod('POST')) {
+            foreach ($ranking->getCartasDisponibles() as $cartaExistente) {
+                $ranking->removeCartasDisponible($cartaExistente);
+            }
+
+            $cartasSeleccionadas = $request->request->all('cartas');
+
+            if (!empty($cartasSeleccionadas)) {
+                foreach ($cartasSeleccionadas as $cartaId) {
+                    $carta = $cartaRepository->find($cartaId);
+                    if ($carta) {
+                        $ranking->addCartasDisponible($carta);
+                    }
+                }
+            }
+
+            $em->flush();
+            return $this->redirectToRoute('admin_rankings');
+        }
+
+        return $this->render('admin/ranking_editar.html.twig', [
+            'ranking' => $ranking,
+            'todas_las_cartas' => $cartaRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/admin/rankings/{id}/eliminar', name: 'admin_ranking_eliminar')]
+    public function eliminarRanking(Ranking $ranking, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $em->remove($ranking);
+        $em->flush();
+
+        return $this->redirectToRoute('admin_rankings');
+    }
+
+    // SECCIÓN: Carga de Datos API
     #[Route('/admin/cartas/load', name: 'data_load_api')]
-    public function data_load(
-        HttpClientInterface $httpClient,
-        EntityManagerInterface $entityManager,
-        ?Profiler $profiler = null
-    ): Response {
-        // Ajustar la memoria para poder mejorar el redimiento de los 3000 articulos
+    public function data_load(HttpClientInterface $httpClient, EntityManagerInterface $entityManager, ?Profiler $profiler = null): Response
+    {
         if (null !== $profiler) {
-            $profiler->disable(); // Desactiva el debug para ahorrar RAM
+            $profiler->disable();
         }
         ini_set('memory_limit', '512M');
-        set_time_limit(0); // Tiempo de ejecución ilimitado
+        set_time_limit(0);
 
-        // Mi api key (cuenta personal creada)
         $apiKey = '67a3838ecdd55f9ba1eb49abe1cb84a595d7fc6195a407de7534bf3940dc1871';
         $page = 1;
         $totalProcessed = 0;
@@ -53,13 +120,11 @@ final class AdminController extends AbstractController
             $data = $response->toArray();
             $content = $data['data'] ?? $data;
 
-            // Si la página está vacía, hemos terminado
             if (empty($content)) {
                 break;
             }
 
             foreach ($content as $element) {
-                // Expansión
                 $setName = $element['set']['name'] ?? 'Generic Set';
                 $expansion = $entityManager->getRepository(Expansiones::class)->findOneBy(['nombreExpansion' => $setName]);
 
@@ -67,17 +132,15 @@ final class AdminController extends AbstractController
                     $expansion = new Expansiones();
                     $expansion->setNombreExpansion($setName);
                     $entityManager->persist($expansion);
-                    $entityManager->flush(); // Necesario para obtener ID antes de asignar a carta
+                    $entityManager->flush();
                 }
 
-                // Buscar por id string de la Aapi
                 $carta = $entityManager->getRepository(Carta::class)->find($element['id']);
                 if (!$carta) {
                     $carta = new Carta();
                     $carta->setId($element['id']);
                 }
 
-                // Mapeo de campos y con posibilidad de nulos
                 $carta->setNombre($element['name']);
                 $carta->setRarity($element['rarity'] ?? null);
                 $carta->setTipo($element['type']);
@@ -94,7 +157,6 @@ final class AdminController extends AbstractController
 
                 $entityManager->persist($carta);
 
-                // En caso de existir imagenes para no saturar ni duplicar se eliminan las anteriores y se añaden nuevas
                 if ($carta->getId()) {
                     $existingImages = $entityManager->getRepository(Imagenes::class)->findBy(['carta' => $carta]);
                     foreach ($existingImages as $oldImg) {
@@ -121,20 +183,19 @@ final class AdminController extends AbstractController
                 $totalProcessed++;
             }
 
-            // Liberamos memoria para no saturar el proceso de extraccion
             $entityManager->flush();
-            $entityManager->clear(); // Libera la RAM de los objetos procesados
+            $entityManager->clear();
 
             $page++;
             if ($page > 150)
-                break; // Límite de seguridad por si la API entra en bucle
+                break;
         }
 
         return $this->render('admin/admin.html.twig', [
             'controller_name' => 'AdminController',
             'status' => 'success',
             'message' => "Se han cargado/actualizado $totalProcessed cartas correctamente.",
-            'content' => [] // No enviamos miles de objetos a Twig para evitar error de memoria en la vista
+            'content' => []
         ]);
     }
 }

@@ -1,9 +1,8 @@
-{# templates/home/register.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
 
-	{# --- HERO SECTION (Cabecera Llamativa) --- #}
+	{# SECCIÓN: Hero Section #}
 	<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-dark rounded-3 shadow-lg" style="background: linear-gradient(45deg, #2c3e50, #000000); border: 1px solid #333;">
 		<div class="col-md-8 p-lg-5 mx-auto my-5">
 			<h1 class="display-4 fw-bold text-white">ELIGE TU FAVORITA</h1>
@@ -14,7 +13,6 @@
 				Ver RANKINGS
 			</a>
 		</div>
-		{# Decoración de fondo (opcional) #}
 		<div class="product-device shadow-sm d-none d-md-block"></div>
 		<div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
 	</div>
@@ -25,17 +23,17 @@
 			<span class="badge bg-dark border border-secondary text-secondary">Actualizado recientemente</span>
 		</div>
 
-		{# --- GRID DE CARTAS --- #}
+		{# SECCIÓN: Grid de Cartas #}
 		<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
 			{% for carta in cartas %}
 				<div class="col">
 					<div
 						class="card h-100 tcg-card overflow-hidden position-relative">
 
-						{# Borde superior de color según la carta #}
+						{# Borde superior #}
 						<div style="height: 4px; background-color: {{ _self.getColorHex(carta.color) }};"></div>
 
-						{# Gestión de imagen #}
+						{# Imagen #}
 						{% set imagenUrl = null %}
 						{% for img in carta.imagenes %}
 							{% if img.tamanyo == 'small' %}
@@ -55,7 +53,6 @@
 								</div>
 							{% endif %}
 
-							{# Badge de Rareza #}
 							<span class="position-absolute top-0 end-0 m-2 badge bg-black bg-opacity-75 border border-secondary text-warning">
 								{{ carta.rarity|default('Common') }}
 							</span>
@@ -85,13 +82,12 @@
 								</div>
 							</div>
 
-							{# Badge de Color #}
 							<span class="badge w-100" style="background-color: {{ _self.getColorHex(carta.color) }}; color: white; text-shadow: 1px 1px 2px black;">
 								{{ carta.color }}
 							</span>
 						</div>
 
-						{# Botón Overlay (aparece al final) #}
+						{# Botón Overlay #}
 						<div class="card-footer bg-dark border-top border-secondary p-1">
 							<a href="{{ path('app_carta_detalle', {'id': carta.id}) }}" class="btn btn-outline-light btn-sm w-100 border-0" style="font-size: 0.85rem;">
 								Ver Detalles & Reseñas
@@ -110,7 +106,7 @@
 
 {% endblock %}
 
-{# MACRO para colores (Igual que antes pero ajustada para CSS) #}
+{# SECCIÓN: Macro para colores #}
 {% macro getColorHex(colorName) %}
 	{% if 'Red' in colorName %}#c0392b
 		{% elseif 'Green' in colorName %}#27ae60

@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ranking index
+{% endblock %}
+
+{% block body %}
+	{# SECCIÓN: Índice de Rankings #}
+	<h1>Ranking index</h1>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Nombre</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for ranking in rankings %}
+				<tr>
+					<td>{{ ranking.id }}</td>
+					<td>{{ ranking.nombre }}</td>
+					<td>
+						<a href="{{ path('app_admin_ranking_show', {'id': ranking.id}) }}">show</a>
+						<a href="{{ path('app_admin_ranking_edit', {'id': ranking.id}) }}">edit</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="3">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('app_admin_ranking_new') }}">Create new</a>
+{% endblock %}

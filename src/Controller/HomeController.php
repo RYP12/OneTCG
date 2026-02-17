@@ -7,8 +7,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+// SECCIÓN: Controlador Principal
 class HomeController extends AbstractController
 {
+    // SECCIÓN: Página de Inicio
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {

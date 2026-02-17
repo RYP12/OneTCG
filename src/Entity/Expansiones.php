@@ -5,10 +5,12 @@ namespace App\Entity;
 use App\Repository\ExpansionesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+// SECCIÓN: Entidad Expansiones
 #[ORM\Entity(repositoryClass: ExpansionesRepository::class)]
 #[ORM\Table(name: 'expansiones', schema: 'onetcg')]
 class Expansiones
 {
+    // SECCIÓN: Propiedades
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -17,6 +19,7 @@ class Expansiones
     #[ORM\Column(length: 255, unique: true)]
     private ?string $nombreExpansion = null;
 
+    // SECCIÓN: Getters y Setters
     public function getId(): ?int
     {
         return $this->id;
@@ -30,7 +33,6 @@ class Expansiones
     public function setNombreExpansion(string $nombreExpansion): static
     {
         $this->nombreExpansion = $nombreExpansion;
-
         return $this;
     }
 }

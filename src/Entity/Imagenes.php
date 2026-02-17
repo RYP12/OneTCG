@@ -6,10 +6,12 @@ use App\Repository\ImagenesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+// SECCIÓN: Entidad Imágenes
 #[ORM\Entity(repositoryClass: ImagenesRepository::class)]
 #[ORM\Table(name: 'imagenes', schema: 'onetcg')]
 class Imagenes
 {
+    // SECCIÓN: Propiedades
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -25,6 +27,7 @@ class Imagenes
     #[ORM\Column(type: Types::TEXT)]
     private ?string $url = null;
 
+    // SECCIÓN: Getters y Setters
     public function getId(): ?int
     {
         return $this->id;
@@ -49,7 +52,6 @@ class Imagenes
     public function setTamanyo(string $tamanyo): static
     {
         $this->tamanyo = $tamanyo;
-
         return $this;
     }
 
@@ -61,7 +63,6 @@ class Imagenes
     public function setUrl(string $url): static
     {
         $this->url = $url;
-
         return $this;
     }
 }

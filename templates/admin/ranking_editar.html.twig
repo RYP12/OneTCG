@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestionar Cartas -
+	{{ ranking.nombre }}
+{% endblock %}
+
+{% block body %}
+	<div class="container py-5">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h1 class="text-warning mb-0">⚙️ Gestionar Cartas:
+				<span class="text-white">{{ ranking.nombre }}</span>
+			</h1>
+			<a href="{{ path('admin_rankings') }}" class="btn btn-outline-light">🔙 Volver</a>
+		</div>
+
+		{# SECCIÓN: Selección de Cartas #}
+		<div class="card bg-dark border-secondary shadow-lg">
+			<div class="card-body">
+				<form method="POST" action="{{ path('admin_ranking_editar', {'id': ranking.id}) }}">
+					<p class="text-light fs-5 mb-4 border-bottom border-secondary pb-3">
+						Selecciona las cartas que los usuarios podrán ordenar en esta Tierlist:
+					</p>
+
+					<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3 mb-4" style="max-height: 60vh; overflow-y: auto;">
+						{% for carta in todas_las_cartas %}
+							<div class="col">
+								<div class="form-check border border-secondary rounded p-2 h-100 d-flex align-items-center custom-checkbox-card">
+									<input class="form-check-input ms-1 me-3 fs-4 border-warning bg-dark" type="checkbox" name="cartas[]" value="{{ carta.id }}" id="carta_{{ carta.id }}" {% if carta in ranking.cartasDisponibles %} checked {% endif %}>
+
+									<label class="form-check-label text-light w-100" style="cursor: pointer;" for="carta_{{ carta.id }}">
+										<span class="fw-bold">{{ carta.nombre }}</span>
+										<br>
+										<small class="text-muted">{{ carta.tipo }}
+											|
+											<span style="color: {{ carta.color|lower }}">{{ carta.color }}</span>
+										</small>
+									</label>
+								</div>
+							</div>
+						{% else %}
+							<div class="col-12">
+								<div class="alert alert-secondary text-center">No hay cartas registradas en la base de datos. ¡Cárgalas desde la API primero!</div>
+							</div>
+						{% endfor %}
+					</div>
+
+					<div class="text-end border-top border-secondary pt-4 mt-2">
+						<button type="submit" class="btn btn-warning btn-lg fw-bold text-dark px-5">
+							💾 Guardar Selección
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<style>
+		/* SECCIÓN: Estilos Checkbox Personalizados */
+		.custom-checkbox-card:hover {
+			background-color: rgba(241, 196, 15, 0.1);
+			border-color: #f1c40f !important;
+			transition: 0.2s;
+		}
+		.form-check-input:checked {
+			background-color: #f1c40f;
+			border-color: #f1c40f;
+		}
+	</style>
+{% endblock %}
