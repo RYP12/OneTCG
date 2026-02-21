@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Expansión - Admin{% endblock %}
+
+{% block body %}
+<div class="container py-5" style="max-width: 600px;">
+
+    {# SECCIÓN: Cabecera #}
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
+        <h1 class="h3 fw-bold text-warning mb-0">✎ Editar Expansión</h1>
+        <a href="{{ path('admin_expansiones') }}" class="btn btn-outline-light btn-sm">🔙 Volver</a>
+    </div>
+
+    {# SECCIÓN: Formulario Editar #}
+    <div class="card bg-dark border-secondary">
+        <div class="card-body p-4">
+            <form method="POST" action="{{ path('admin_expansion_editar', {'id': expansion.id}) }}">
+                <div class="mb-4">
+                    <label class="form-label text-muted small text-uppercase">ID</label>
+                    <input type="text" class="form-control bg-dark text-secondary border-secondary" value="{{ expansion.id }}" disabled>
+                </div>
+                <div class="mb-4">
+                    <label for="nombre" class="form-label text-light">Nombre de la Expansión</label>
+                    <input type="text" name="nombre" id="nombre"
+                           class="form-control bg-dark text-light border-secondary"
+                           value="{{ expansion.nombreExpansion }}" required>
+                </div>
+                <div class="d-flex gap-2 justify-content-end">
+                    <a href="{{ path('admin_expansiones') }}" class="btn btn-outline-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-warning fw-bold text-dark px-4">💾 Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

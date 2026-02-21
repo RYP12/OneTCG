@@ -1,4 +1,4 @@
-{# templates/base.html.twig #}
+{# SECCIÓN: Base Layout #}
 <!DOCTYPE html>
 <html lang="es" data-bs-theme="dark">
 	<head>
@@ -56,7 +56,7 @@
 			text-transform: uppercase;
 		}
 
-		/* ── Auth Pages ── */
+		/* SECCIÓN: Páginas de Autenticación */
 		@keyframes auth-gradient {
 			0% {
 				background-position: 0 50%;
@@ -279,15 +279,20 @@
 									<li>
 										<h6 class="dropdown-header text-warning admin-header">Panel Admin</h6>
 									</li>
-
 									<li>
-										<a class="dropdown-item" href="#">👥 Gestión de Usuarios</a>
+										<a class="dropdown-item" href="{{ path('admin_site') }}">🖥️ Dashboard Admin</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="{{ path('admin_cartas_list') }}">🃏 Gestión de Cartas</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="{{ path('admin_expansiones') }}">📦 Gestión de Expansiones</a>
 									</li>
 									<li>
 										<a class="dropdown-item" href="{{ path('admin_rankings') }}">🏆 Gestión de Rankings</a>
 									</li>
 									<li>
-										<a class="dropdown-item" href="{{path('data_load_api')}}">📥 Cargar Cartas (API)</a>
+										<a class="dropdown-item" href="{{ path('data_load_api') }}" onclick="return confirm('¿Iniciar carga desde la API?')">📥 Cargar Cartas (API)</a>
 									</li>
 								{% endif %}
 

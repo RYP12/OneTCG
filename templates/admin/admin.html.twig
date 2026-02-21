@@ -1,1 +1,107 @@
-{# SECCIÓN: Plantilla Dashboard Admin #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Panel de Administración - OneTCG{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+
+    {# SECCIÓN: Cabecera #}
+    <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom border-secondary">
+        <div>
+            <h1 class="display-5 fw-bold text-warning mb-1">👨‍💻 Panel de Administración</h1>
+            <p class="text-secondary mb-0">Gestión global del sitio One Piece TCG</p>
+        </div>
+        <span class="badge bg-warning text-dark fs-6 px-3 py-2">ADMIN</span>
+    </div>
+
+    {# SECCIÓN: Mensaje de estado (tras cargar API) #}
+    {% if message is defined %}
+        <div class="alert {% if status == 'success' %}alert-success{% else %}alert-danger{% endif %} border-0 mb-4">
+            {{ message }}
+        </div>
+    {% endif %}
+
+    {# SECCIÓN: Tarjetas de Estadísticas #}
+    <h4 class="text-secondary text-uppercase mb-3" style="font-size: 0.8rem; letter-spacing: 2px;">Resumen Global</h4>
+    <div class="row g-4 mb-5">
+
+        <div class="col-6 col-md-4 col-lg">
+            <div class="card bg-dark border-secondary h-100 text-center p-3">
+                <div class="display-4 fw-bold text-warning">{{ total_cartas }}</div>
+                <div class="text-secondary small text-uppercase mt-1">Cartas</div>
+                <a href="{{ path('admin_cartas_list') }}" class="stretched-link"></a>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg">
+            <div class="card bg-dark border-secondary h-100 text-center p-3">
+                <div class="display-4 fw-bold text-info">{{ total_expansiones }}</div>
+                <div class="text-secondary small text-uppercase mt-1">Expansiones</div>
+                <a href="{{ path('admin_expansiones') }}" class="stretched-link"></a>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg">
+            <div class="card bg-dark border-secondary h-100 text-center p-3">
+                <div class="display-4 fw-bold text-success">{{ total_usuarios }}</div>
+                <div class="text-secondary small text-uppercase mt-1">Usuarios</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg">
+            <div class="card bg-dark border-secondary h-100 text-center p-3">
+                <div class="display-4 fw-bold text-primary">{{ total_rankings }}</div>
+                <div class="text-secondary small text-uppercase mt-1">Rankings</div>
+                <a href="{{ path('admin_rankings') }}" class="stretched-link"></a>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg">
+            <div class="card bg-dark border-secondary h-100 text-center p-3">
+                <div class="display-4 fw-bold text-danger">{{ total_resenyas }}</div>
+                <div class="text-secondary small text-uppercase mt-1">Reseñas</div>
+            </div>
+        </div>
+
+    </div>
+
+    {# SECCIÓN: Acciones Rápidas #}
+    <h4 class="text-secondary text-uppercase mb-3" style="font-size: 0.8rem; letter-spacing: 2px;">Acciones Rápidas</h4>
+    <div class="row g-3">
+
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ path('admin_cartas_list') }}" class="card bg-dark border-secondary text-decoration-none h-100 p-4 d-flex flex-column align-items-start hover-gold">
+                <span class="fs-2 mb-2">🃏</span>
+                <h5 class="text-white fw-bold mb-1">Gestión de Cartas</h5>
+                <p class="text-secondary small mb-0">Crear, editar y eliminar cartas del catálogo.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ path('admin_expansiones') }}" class="card bg-dark border-secondary text-decoration-none h-100 p-4 d-flex flex-column align-items-start">
+                <span class="fs-2 mb-2">📦</span>
+                <h5 class="text-white fw-bold mb-1">Gestión de Expansiones</h5>
+                <p class="text-secondary small mb-0">Crear, editar y eliminar categorías/expansiones.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ path('admin_rankings') }}" class="card bg-dark border-secondary text-decoration-none h-100 p-4 d-flex flex-column align-items-start">
+                <span class="fs-2 mb-2">🏆</span>
+                <h5 class="text-white fw-bold mb-1">Gestión de Rankings</h5>
+                <p class="text-secondary small mb-0">Crear tierlists globales y asignar cartas.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ path('data_load_api') }}" class="card bg-dark border-warning text-decoration-none h-100 p-4 d-flex flex-column align-items-start" onclick="return confirm('¿Iniciar carga de cartas desde la API? Este proceso puede tardar varios minutos.')">
+                <span class="fs-2 mb-2">📥</span>
+                <h5 class="text-warning fw-bold mb-1">Cargar desde API</h5>
+                <p class="text-secondary small mb-0">Importar/actualizar cartas desde apitcg.com.</p>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

@@ -6,6 +6,8 @@ use App\Entity\Carta;
 use App\Entity\Expansiones;
 use App\Entity\Imagenes;
 use App\Entity\Ranking;
+use App\Entity\Resenya;
+use App\Entity\Usuario;
 use App\Repository\CartaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,9 +22,22 @@ final class AdminController extends AbstractController
 {
     // SECCIÓN: Rutas Principales
     #[Route('/admin', name: 'admin_site')]
-    public function index(): Response
+    public function index(EntityManagerInterface $em): Response
     {
-        return $this->render('admin/admin.html.twig');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        return $this->render('admin/admin.html.twig', $this->buildStats($em));
+    }
+
+    private function buildStats(EntityManagerInterface $em): array
+    {
+        return [
+            'total_cartas'      => $em->getRepository(Carta::class)->count([]),
+            'total_expansiones' => $em->getRepository(Expansiones::class)->count([]),
+            'total_usuarios'    => $em->getRepository(Usuario::class)->count([]),
+            'total_rankings'    => $em->getRepository(Ranking::class)->count([]),
+            'total_resenyas'    => $em->getRepository(Resenya::class)->count([]),
+        ];
     }
 
     #[Route('/admin/rankings', name: 'admin_rankings')]
@@ -191,11 +206,12 @@ final class AdminController extends AbstractController
                 break;
         }
 
-        return $this->render('admin/admin.html.twig', [
-            'controller_name' => 'AdminController',
-            'status' => 'success',
-            'message' => "Se han cargado/actualizado $totalProcessed cartas correctamente.",
-            'content' => []
-        ]);
+        return $this->render('admin/admin.html.twig', array_merge(
+            $this->buildStats($entityManager),
+            [
+                'status'  => 'success',
+                'message' => "Se han cargado/actualizado $totalProcessed cartas correctamente.",
+            ]
+        ));
     }
 }

@@ -7,15 +7,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+// SECCIÓN: Controlador de Seguridad
 class SecurityController extends AbstractController
 {
+    // SECCIÓN: Inicio de Sesión
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
-
-        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', [
@@ -24,6 +23,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    // SECCIÓN: Cierre de Sesión
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {

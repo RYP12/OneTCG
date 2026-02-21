@@ -6,11 +6,10 @@ use App\Entity\Carta;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Carta>
- */
+// SECCIÓN: Repositorio de Cartas
 class CartaRepository extends ServiceEntityRepository
 {
+    // SECCIÓN: Constructor
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Carta::class);
@@ -43,12 +42,12 @@ class CartaRepository extends ServiceEntityRepository
 
         if ($expansionId !== null) {
             $qb->andWhere('e.id = :expansionId')
-               ->setParameter('expansionId', $expansionId);
+                ->setParameter('expansionId', $expansionId);
         }
 
         if ($nombre !== null && $nombre !== '') {
             $qb->andWhere('LOWER(c.nombre) LIKE LOWER(:nombre)')
-               ->setParameter('nombre', '%' . $nombre . '%');
+                ->setParameter('nombre', '%' . $nombre . '%');
         }
 
         return $qb->getQuery()->getResult();
