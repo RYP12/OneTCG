@@ -1,2 +1,155 @@
 {% extends 'base.html.twig' %}
 {# SECCIÓN: Directorio #}
+
+{% block title %}Directorio de Cartas - OneTCG{% endblock %}
+
+{% block body %}
+
+{# SECCIÓN: Macro para colores #}
+{% macro getColorHex(colorName) %}
+	{% if colorName is not null %}
+		{% if 'Red' in colorName %}#c0392b
+		{% elseif 'Green' in colorName %}#27ae60
+		{% elseif 'Blue' in colorName %}#2980b9
+		{% elseif 'Purple' in colorName %}#8e44ad
+		{% elseif 'Black' in colorName %}#2c3e50
+		{% elseif 'Yellow' in colorName %}#f39c12
+		{% else %}#7f8c8d
+		{% endif %}
+	{% else %}#7f8c8d
+	{% endif %}
+{% endmacro %}
+
+<div class="container-fluid px-4 mt-4">
+
+	{# SECCIÓN: Cabecera #}
+	<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
+		<div>
+			<h1 class="h2 text-white mb-0 fw-bold">Directorio de Cartas</h1>
+			<small class="text-secondary">{{ cartas|length }} cartas encontradas</small>
+		</div>
+	</div>
+
+	{# SECCIÓN: Filtros #}
+	<div class="mb-4">
+		<form method="GET" action="{{ path('app_directorio') }}" class="d-flex align-items-center gap-3 flex-wrap">
+
+			{# Buscador por nombre #}
+			<div class="input-group input-group-sm" style="max-width: 280px;">
+				<input
+					type="text"
+					name="q"
+					value="{{ busqueda }}"
+					class="form-control bg-dark text-white border-secondary"
+					placeholder="Buscar por nombre..."
+					autocomplete="off"
+				>
+				<button type="submit" class="btn btn-warning btn-sm text-dark fw-bold">🔍</button>
+			</div>
+
+			{# Filtro por expansión #}
+			<select name="expansion" class="form-select form-select-sm bg-dark text-white border-secondary" style="max-width: 320px;" onchange="this.form.submit()">
+				<option value="">Todas las expansiones</option>
+				{% for expansion in expansiones %}
+					<option value="{{ expansion.id }}" {% if expansionActiva == expansion.id %}selected{% endif %}>
+						{{ expansion.nombreExpansion }}
+					</option>
+				{% endfor %}
+			</select>
+
+			{# Limpiar filtros #}
+			{% if expansionActiva or busqueda %}
+				<a href="{{ path('app_directorio') }}" class="btn btn-sm btn-outline-secondary">
+					✕ Limpiar
+				</a>
+			{% endif %}
+
+		</form>
+	</div>
+
+	{# SECCIÓN: Grid de Cartas #}
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+		{% for carta in cartas %}
+			<div class="col">
+				<div class="card h-100 tcg-card overflow-hidden position-relative">
+
+					{# Borde superior #}
+					<div style="height: 4px; background-color: {{ _self.getColorHex(carta.color) }};"></div>
+
+					{# Imagen #}
+					{% set imagenUrl = null %}
+					{% for img in carta.imagenes %}
+						{% if img.tamanyo == 'small' %}
+							{% set imagenUrl = img.url %}
+						{% endif %}
+					{% endfor %}
+					{% if imagenUrl is null and carta.imagenes|length > 0 %}
+						{% set imagenUrl = carta.imagenes|first.url %}
+					{% endif %}
+
+					<div class="card-img-top bg-black p-1 position-relative text-center">
+						{% if imagenUrl %}
+							<img src="{{ imagenUrl }}" class="img-fluid rounded" alt="{{ carta.nombre }}" loading="lazy" style="max-height: 280px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));">
+						{% else %}
+							<div class="d-flex align-items-center justify-content-center text-muted" style="height: 260px;">
+								Sin Imagen
+							</div>
+						{% endif %}
+
+						<span class="position-absolute top-0 end-0 m-2 badge bg-black bg-opacity-75 border border-secondary text-warning">
+							{{ carta.rarity|default('Common') }}
+						</span>
+					</div>
+
+					<div class="card-body bg-dark text-white pt-2">
+						<h5 class="card-title text-truncate fw-bold mb-0" title="{{ carta.nombre }}">{{ carta.nombre }}</h5>
+						<small class="text-secondary d-block mb-1">{{ carta.id }} · {{ carta.tipo }}</small>
+						{% if carta.expansion %}
+							<small class="d-block mb-2 text-truncate" style="font-size: 0.7rem; color: var(--op-gold);" title="{{ carta.expansion.nombreExpansion }}">
+								{{ carta.expansion.nombreExpansion }}
+							</small>
+						{% endif %}
+
+						{# Estadísticas Visuales #}
+						<div class="d-flex justify-content-between text-center bg-black bg-opacity-25 rounded p-2 mb-2 border border-secondary border-opacity-25">
+							<div>
+								<div class="text-secondary" style="font-size: 0.65rem;">PODER</div>
+								<div class="fw-bold text-danger" style="font-size: 0.85rem;">{{ carta.poder ?? '-' }}</div>
+							</div>
+							<div class="border-start border-secondary mx-1"></div>
+							<div>
+								<div class="text-secondary" style="font-size: 0.65rem;">COUNTER</div>
+								<div class="fw-bold text-info" style="font-size: 0.85rem;">{{ carta.counter ?? '-' }}</div>
+							</div>
+							<div class="border-start border-secondary mx-1"></div>
+							<div>
+								<div class="text-secondary" style="font-size: 0.65rem;">COSTE</div>
+								<div class="fw-bold text-warning" style="font-size: 0.85rem;">{{ carta.coste ?? '-' }}</div>
+							</div>
+						</div>
+
+						<span class="badge w-100" style="background-color: {{ _self.getColorHex(carta.color) }}; color: white; text-shadow: 1px 1px 2px black;">
+							{{ carta.color }}
+						</span>
+					</div>
+
+					{# Botón Overlay #}
+				<div class="card-footer bg-dark border-top border-secondary p-1">
+						<a href="{{ path('app_carta_detalle', {'id': carta.id}) }}" class="btn btn-outline-light btn-sm w-100 border-0" style="font-size: 0.8rem;">
+							Ver Detalles & Reseñas
+						</a>
+					</div>
+
+				</div>
+			</div>
+		{% else %}
+			<div class="col-12 text-center py-5">
+				<p class="text-muted fs-5">No se encontraron cartas.</p>
+				<a href="{{ path('app_directorio') }}" class="btn btn-outline-secondary mt-2">Ver todas las cartas</a>
+			</div>
+		{% endfor %}
+	</div>
+
+</div>
+
+{% endblock %}

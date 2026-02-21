@@ -41,7 +41,7 @@ class RankingController extends AbstractController
             }
         }
 
-        return $this->render('ranking/mis_rankings.html.twig', [
+        return $this->render('ranking/misRankings.html.twig', [
             'rankings_participados' => $rankingsParticipados,
             'rankings_nuevos' => $rankingsNuevos,
         ]);
@@ -88,7 +88,7 @@ class RankingController extends AbstractController
             ['orden' => 'ASC']
         );
 
-        return $this->render('ranking/detalle_ranking.html.twig', [
+        return $this->render('ranking/detalleRanking.html.twig', [
             'ranking' => $ranking,
             'items' => $items,
         ]);

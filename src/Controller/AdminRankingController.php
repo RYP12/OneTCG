@@ -22,7 +22,7 @@ final class AdminRankingController extends AbstractController
             ->getRepository(Ranking::class)
             ->findAll();
 
-        return $this->render('admin_ranking/index.html.twig', [
+        return $this->render('admin_ranking/indexRanking.html.twig', [
             'rankings' => $rankings,
         ]);
     }
@@ -42,7 +42,7 @@ final class AdminRankingController extends AbstractController
             return $this->redirectToRoute('app_admin_ranking_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('admin_ranking/new.html.twig', [
+        return $this->render('admin_ranking/nuevoRanking.html.twig', [
             'ranking' => $ranking,
             'form' => $form,
         ]);
@@ -52,7 +52,7 @@ final class AdminRankingController extends AbstractController
     #[Route('/{id}', name: 'app_admin_ranking_show', methods: ['GET'])]
     public function show(Ranking $ranking): Response
     {
-        return $this->render('admin_ranking/show.html.twig', [
+        return $this->render('admin_ranking/detalleAdminRanking.html.twig', [
             'ranking' => $ranking,
         ]);
     }
@@ -70,7 +70,7 @@ final class AdminRankingController extends AbstractController
             return $this->redirectToRoute('app_admin_ranking_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('admin_ranking/edit.html.twig', [
+        return $this->render('admin_ranking/editRanking.html.twig', [
             'ranking' => $ranking,
             'form' => $form,
         ]);
@@ -115,7 +115,7 @@ final class AdminRankingController extends AbstractController
             return $this->redirectToRoute('admin_rankings');
         }
 
-        return $this->render('admin/ranking_editar.html.twig', [
+        return $this->render('admin/gestionRanking.html.twig', [
             'ranking' => $ranking,
             'todas_las_cartas' => $cartaRepository->findAll(),
         ]);

@@ -43,7 +43,7 @@ final class AdminController extends AbstractController
 
         $rankings = $em->getRepository(Ranking::class)->findAll();
 
-        return $this->render('admin/rankings.html.twig', [
+        return $this->render('admin/generalAdminRankings.html.twig', [
             'rankings' => $rankings,
         ]);
     }
@@ -74,7 +74,7 @@ final class AdminController extends AbstractController
             return $this->redirectToRoute('admin_rankings');
         }
 
-        return $this->render('admin/ranking_editar.html.twig', [
+        return $this->render('admin/gestionRanking.html.twig', [
             'ranking' => $ranking,
             'todas_las_cartas' => $cartaRepository->findAll(),
         ]);

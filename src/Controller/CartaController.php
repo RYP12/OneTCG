@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Resenya;
 use App\Repository\CartaRepository;
+use App\Repository\ExpansionesRepository;
 use App\Repository\ResenyaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +23,24 @@ class CartaController extends AbstractController
 
         return $this->render('home/home.html.twig', [
             'cartas' => $cartas,
+        ]);
+    }
+
+    // SECCIÓN: Directorio de Cartas
+    #[Route('/directorio', name: 'app_directorio')]
+    public function cartasAllDirectorio(Request $request, CartaRepository $cartaRepository, ExpansionesRepository $expansionesRepository): Response
+    {
+        $expansionId = $request->query->get('expansion') ? (int) $request->query->get('expansion') : null;
+        $busqueda = trim($request->query->get('q', ''));
+
+        $cartas = $cartaRepository->obtenerCartasDirectorio($expansionId, $busqueda !== '' ? $busqueda : null);
+        $expansiones = $expansionesRepository->findBy([], ['nombreExpansion' => 'ASC']);
+
+        return $this->render('cartas/directorio.html.twig', [
+            'cartas' => $cartas,
+            'expansiones' => $expansiones,
+            'expansionActiva' => $expansionId,
+            'busqueda' => $busqueda,
         ]);
     }
 
