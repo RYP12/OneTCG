@@ -88,36 +88,4 @@ final class AdminRankingController extends AbstractController
         return $this->redirectToRoute('app_admin_ranking_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    // SECCIÓN: Editar Cartas del Ranking
-    #[Route('/admin/rankings/{id}/editar', name: 'admin_ranking_editar', methods: ['GET', 'POST'])]
-    public function editarCartas(
-        \Symfony\Component\HttpFoundation\Request $request,
-        \App\Entity\Ranking $ranking,
-        \Doctrine\ORM\EntityManagerInterface $em,
-        \App\Repository\CartaRepository $cartaRepository
-    ): \Symfony\Component\HttpFoundation\Response {
-
-        if ($request->isMethod('POST')) {
-            $ranking->getCartasDisponibles()->clear();
-
-            $cartasSeleccionadas = $request->request->all('cartas');
-
-            if (!empty($cartasSeleccionadas)) {
-                foreach ($cartasSeleccionadas as $cartaId) {
-                    $carta = $cartaRepository->find($cartaId);
-                    if ($carta) {
-                        $ranking->addCartasDisponible($carta);
-                    }
-                }
-            }
-
-            $em->flush();
-            return $this->redirectToRoute('admin_rankings');
-        }
-
-        return $this->render('admin/gestionRanking.html.twig', [
-            'ranking' => $ranking,
-            'todas_las_cartas' => $cartaRepository->findAll(),
-        ]);
-    }
 }

@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+{# SECCIÓN: Estadísticas Globales #}
+
+{% block title %}Estadísticas Globales - OneTCG{% endblock %}
+
+{% block body %}
+
+<div class="container mt-5 mb-5">
+
+    {# SECCIÓN: Cabecera #}
+    <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom border-secondary">
+        <div>
+            <h1 class="h2 text-white mb-1 fw-bold">Estadísticas Globales</h1>
+            <small class="text-secondary">Resumen de la actividad de la comunidad</small>
+        </div>
+        <div class="text-end">
+            <div class="display-5 fw-bold text-warning lh-1">{{ total_resenyas }}</div>
+            <small class="text-secondary text-uppercase" style="letter-spacing: 1px; font-size: 0.75rem;">Valoraciones totales</small>
+        </div>
+    </div>
+
+    {# SECCIÓN: Elementos más valorados #}
+    <div class="mb-5">
+        <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-secondary">
+            <h2 class="h4 text-white mb-0 fw-bold">Elementos más valorados</h2>
+            <span class="ms-3 badge bg-warning text-dark">Top 10</span>
+        </div>
+
+        {% if cartas_mas_valoradas is empty %}
+            <p class="text-secondary fst-italic">Aún no hay valoraciones registradas.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle">
+                    <thead>
+                        <tr class="border-secondary" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4);">
+                            <th style="width: 40px;">#</th>
+                            <th>Carta</th>
+                            <th>Expansión</th>
+                            <th class="text-center">Valoraciones</th>
+                            <th class="text-end" style="width: 200px;">Media</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fila in cartas_mas_valoradas %}
+                            {% set carta = fila.carta %}
+                            <tr>
+                                <td class="fw-bold" style="color: rgba(255,255,255,0.35);">{{ loop.index }}</td>
+                                <td>
+                                    <a href="{{ path('app_carta_detalle', {'id': carta.id}) }}" class="text-white text-decoration-none fw-bold">
+                                        {{ carta.nombre }}
+                                    </a>
+                                    <small class="d-block text-secondary">{{ carta.id }}</small>
+                                </td>
+                                <td>
+                                    {% if carta.expansion %}
+                                        <small style="color: var(--op-gold);">{{ carta.expansion.nombreExpansion }}</small>
+                                    {% else %}
+                                        <small class="text-secondary">—</small>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center text-secondary">{{ fila.num_resenyas }}</td>
+                                <td class="text-end">
+                                    <span class="fw-bold text-warning">{{ fila.media|number_format(1) }}</span>
+                                    <span class="text-secondary">&nbsp;/ 5</span>
+                                    <div class="progress mt-1" style="height: 4px; background-color: #333;">
+                                        <div class="progress-bar bg-warning" style="width: {{ (fila.media / 5 * 100)|round }}%;"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    {# SECCIÓN: Opinión general por posición en cada ranking #}
+    <div class="mb-5">
+        <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-secondary">
+            <h2 class="h4 text-white mb-0 fw-bold">Opinión general por posición en cada ranking</h2>
+        </div>
+
+        {% if opinion_por_carta_rankings is empty %}
+            <p class="text-secondary fst-italic">Aún no hay rankings completados por usuarios.</p>
+        {% else %}
+            <div class="accordion accordion-flush" id="acordeonRankings">
+                {% for grupo in opinion_por_carta_rankings %}
+                    {% set panelId = 'panel-' ~ loop.index %}
+                    <div class="accordion-item border border-secondary mb-2 rounded overflow-hidden" style="background-color: #1a1a1a;">
+
+                        {# Cabecera del desplegable #}
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold text-uppercase"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#{{ panelId }}"
+                                    style="background-color: #1a1a1a; color: var(--op-gold); letter-spacing: 1px; font-size: 0.9rem; box-shadow: none;">
+                                {{ grupo.ranking_nombre }}
+                                <span class="ms-3 badge bg-secondary fw-normal text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                                    {{ grupo.cartas|length }} cartas
+                                </span>
+                            </button>
+                        </h3>
+
+                        {# Contenido del desplegable #}
+                        <div id="{{ panelId }}" class="accordion-collapse collapse">
+                            <div class="accordion-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-dark table-hover align-middle mb-0">
+                                        <thead>
+                                            <tr class="border-secondary" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4);">
+                                                <th style="width: 40px;">#</th>
+                                                <th>Carta</th>
+                                                <th class="text-center">Usuarios</th>
+                                                <th class="text-end" style="width: 200px;">Puntuación media</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for fila in grupo.cartas %}
+                                                <tr>
+                                                    <td class="fw-bold" style="color: rgba(255,255,255,0.35);">{{ loop.index }}</td>
+                                                    <td>
+                                                        <a href="{{ path('app_carta_detalle', {'id': fila.carta_id}) }}" class="text-white text-decoration-none fw-bold">
+                                                            {{ fila.carta_nombre }}
+                                                        </a>
+                                                    </td>
+                                                    <td class="text-center text-secondary">{{ fila.num_votos }}</td>
+                                                    <td class="text-end">
+                                                        <span class="fw-bold text-warning">{{ fila.media }}</span>
+                                                        <span class="text-secondary">&nbsp;/ 10</span>
+                                                        <div class="progress mt-1" style="height: 4px; background-color: #333;">
+                                                            <div class="progress-bar bg-warning" style="width: {{ (fila.media / 10 * 100)|round }}%;"></div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

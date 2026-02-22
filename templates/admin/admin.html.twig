@@ -65,6 +65,128 @@
 
     </div>
 
+    {# SECCIÓN: Estadísticas Detalladas #}
+    <h4 class="text-secondary text-uppercase mb-3" style="font-size: 0.8rem; letter-spacing: 2px;">Estadísticas Detalladas</h4>
+    <div class="row g-4 mb-5">
+
+        {# Lista de Usuarios #}
+        <div class="col-12 col-lg-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-white text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Usuarios</span>
+                    <span class="badge bg-success">{{ lista_usuarios|length }}</span>
+                </div>
+                <div class="card-body p-0" style="max-height: 320px; overflow-y: auto;">
+                    {% if lista_usuarios is empty %}
+                        <p class="text-secondary fst-italic p-3 mb-0">Sin usuarios registrados.</p>
+                    {% else %}
+                        <table class="table table-dark table-sm align-middle mb-0">
+                            <thead style="position: sticky; top: 0; background-color: #1a1a1a;">
+                                <tr class="border-secondary" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4);">
+                                    <th class="ps-3">Usuario</th>
+                                    <th>Email</th>
+                                    <th class="text-center">Rol</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in lista_usuarios %}
+                                    <tr>
+                                        <td class="ps-3 fw-bold text-white">{{ usuario.username }}</td>
+                                        <td class="text-secondary" style="font-size: 0.8rem;">{{ usuario.email }}</td>
+                                        <td class="text-center">
+                                            {% if 'ROLE_ADMIN' in usuario.roles %}
+                                                <span class="badge bg-warning text-dark" style="font-size: 0.65rem;">Admin</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary" style="font-size: 0.65rem;">Usuario</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Lista de Rankings #}
+        <div class="col-12 col-lg-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-white text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Rankings</span>
+                    <span class="badge bg-primary">{{ lista_rankings|length }}</span>
+                </div>
+                <div class="card-body p-0" style="max-height: 320px; overflow-y: auto;">
+                    {% if lista_rankings is empty %}
+                        <p class="text-secondary fst-italic p-3 mb-0">Sin rankings creados.</p>
+                    {% else %}
+                        <table class="table table-dark table-sm align-middle mb-0">
+                            <thead style="position: sticky; top: 0; background-color: #1a1a1a;">
+                                <tr class="border-secondary" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4);">
+                                    <th class="ps-3">Nombre</th>
+                                    <th class="text-center">Cartas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ranking in lista_rankings %}
+                                    <tr>
+                                        <td class="ps-3 fw-bold text-white">
+                                            <a href="{{ path('admin_ranking_editar', {'id': ranking.id}) }}" class="text-white text-decoration-none">
+                                                {{ ranking.nombre }}
+                                            </a>
+                                        </td>
+                                        <td class="text-center text-secondary">{{ ranking.cartasDisponibles|length }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Valoraciones Recientes #}
+        <div class="col-12 col-lg-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-white text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Valoraciones Recientes</span>
+                    <span class="badge bg-danger">{{ total_resenyas }}</span>
+                </div>
+                <div class="card-body p-0" style="max-height: 320px; overflow-y: auto;">
+                    {% if resenyas_recientes is empty %}
+                        <p class="text-secondary fst-italic p-3 mb-0">Sin valoraciones aún.</p>
+                    {% else %}
+                        <table class="table table-dark table-sm align-middle mb-0">
+                            <thead style="position: sticky; top: 0; background-color: #1a1a1a;">
+                                <tr class="border-secondary" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4);">
+                                    <th class="ps-3">Usuario</th>
+                                    <th>Carta</th>
+                                    <th class="text-center">Nota</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for resenya in resenyas_recientes %}
+                                    <tr>
+                                        <td class="ps-3 text-white" style="font-size: 0.85rem;">{{ resenya.usuario.username }}</td>
+                                        <td>
+                                            <a href="{{ path('app_carta_detalle', {'id': resenya.carta.id}) }}" class="text-secondary text-decoration-none" style="font-size: 0.8rem;" title="{{ resenya.carta.nombre }}">
+                                                {{ resenya.carta.nombre|slice(0, 20) }}{% if resenya.carta.nombre|length > 20 %}…{% endif %}
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-warning text-dark">★ {{ resenya.puntuacion }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     {# SECCIÓN: Acciones Rápidas #}
     <h4 class="text-secondary text-uppercase mb-3" style="font-size: 0.8rem; letter-spacing: 2px;">Acciones Rápidas</h4>
     <div class="row g-3">

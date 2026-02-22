@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use App\Repository\ItemRankingRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 // SECCIÓN: Entidad Item de Ranking
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ItemRankingRepository::class)]
 #[ORM\Table(name: 'item_ranking', schema: 'onetcg')]
 class ItemRanking
 {
@@ -29,6 +30,9 @@ class ItemRanking
 
     #[ORM\Column(type: 'integer')]
     private ?int $orden = 0;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $puntuacion = null;
 
     // SECCIÓN: Getters y Setters
     public function getId(): ?int
@@ -73,6 +77,16 @@ class ItemRanking
     public function setOrden(int $orden): static
     {
         $this->orden = $orden;
+        return $this;
+    }
+
+    public function getPuntuacion(): ?int
+    {
+        return $this->puntuacion;
+    }
+    public function setPuntuacion(?int $puntuacion): static
+    {
+        $this->puntuacion = $puntuacion;
         return $this;
     }
 }

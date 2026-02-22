@@ -91,7 +91,7 @@
                         <select name="expansion" id="expansion" class="form-select bg-dark text-light border-secondary">
                             <option value="">— Sin expansión —</option>
                             {% for expansion in expansiones %}
-                                <option value="{{ expansion.id }}" {% if (datos.expansion ?? '') == expansion.id|string %}selected{% endif %}>
+                                <option value="{{ expansion.id }}" {% if (datos.expansion ?? '') == expansion.id ~ '' %}selected{% endif %}>
                                     {{ expansion.nombreExpansion }}
                                 </option>
                             {% endfor %}

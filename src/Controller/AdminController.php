@@ -9,6 +9,8 @@ use App\Entity\Ranking;
 use App\Entity\Resenya;
 use App\Entity\Usuario;
 use App\Repository\CartaRepository;
+use App\Repository\ResenyaRepository;
+use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,11 +24,22 @@ final class AdminController extends AbstractController
 {
     // SECCIÓN: Rutas Principales
     #[Route('/admin', name: 'admin_site')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(EntityManagerInterface $em, UsuarioRepository $usuarioRepository, ResenyaRepository $resenyaRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        return $this->render('admin/admin.html.twig', $this->buildStats($em));
+        $usuarios         = $usuarioRepository->findBy([], ['id' => 'DESC']);
+        $rankings         = $em->getRepository(Ranking::class)->findBy([], ['nombre' => 'ASC']);
+        $resenyasRecientes = $resenyaRepository->obtenerResenyasRecientes(10);
+
+        return $this->render('admin/admin.html.twig', array_merge(
+            $this->buildStats($em),
+            [
+                'lista_usuarios'     => $usuarios,
+                'lista_rankings'     => $rankings,
+                'resenyas_recientes' => $resenyasRecientes,
+            ]
+        ));
     }
 
     private function buildStats(EntityManagerInterface $em): array
